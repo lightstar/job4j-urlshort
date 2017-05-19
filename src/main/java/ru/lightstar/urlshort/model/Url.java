@@ -151,7 +151,7 @@ public class Url {
 
         final Url url = (Url) obj;
         return this.shortUrl.equals(url.shortUrl) && this.longUrl.equals(url.longUrl) &&
-                this.redirectType != url.redirectType && this.hitCount != url.hitCount;
+                this.redirectType == url.redirectType && this.hitCount == url.hitCount;
     }
 
     /**

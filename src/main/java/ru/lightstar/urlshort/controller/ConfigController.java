@@ -65,7 +65,7 @@ public class ConfigController {
      * Constructs <code>ConfigController</code> object.
      *
      * @param configService injected configuration service bean.
-     * @param utilService inject utility service bean.
+     * @param utilService injected utility service bean.
      */
     @Autowired
     public ConfigController(final ConfigService configService, final UtilService utilService) {
