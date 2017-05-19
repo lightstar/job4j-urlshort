@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse defaultExceptionHandler(final Throwable throwable) {
+    public ErrorResponse defaultExceptionHandler() {
         return this.exceptionHandler("Unknown error");
     }
 

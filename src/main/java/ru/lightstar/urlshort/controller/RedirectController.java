@@ -46,7 +46,7 @@ public class RedirectController {
     public ModelAndView redirect(@PathVariable final String shortUrl) throws UrlNotFoundException {
         final Url url = this.redirectService.getUrl(shortUrl);
 
-        final RedirectView redirectView = new RedirectView(url.getLongUrl(),false);
+        final RedirectView redirectView = new RedirectView(url.getLongUrl(), false);
         redirectView.setStatusCode(url.getRedirectType() == Url.REDIRECT_TYPE_PERMANENT ?
                 HttpStatus.MOVED_PERMANENTLY : HttpStatus.FOUND);
 
