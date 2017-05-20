@@ -1,15 +1,12 @@
 package ru.lightstar.urlshort.model;
 
 import org.hamcrest.core.IsSame;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * <code>Account</code> class tests.
@@ -22,15 +19,7 @@ public class AccountTest {
     /**
      * <code>Account</code> object used in all tests.
      */
-    private Account account;
-
-    /**
-     * Initialize objects for all tests.
-     */
-    @Before
-    public void init() {
-        this.account = new Account("test", "testPassword");
-    }
+    private final Account account = new Account("test", "testPassword");
 
     /**
      * Test correctness of created account.

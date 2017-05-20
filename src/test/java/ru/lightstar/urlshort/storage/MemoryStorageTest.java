@@ -23,7 +23,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class MemoryStorageTest {
 
     /**

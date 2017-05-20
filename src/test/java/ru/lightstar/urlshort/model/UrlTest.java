@@ -1,12 +1,10 @@
 package ru.lightstar.urlshort.model;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.junit.Assert.*;
 
 /**
  * <code>Url</code> class tests.
@@ -19,15 +17,7 @@ public class UrlTest {
     /**
      * <code>Url</code> object used in all tests.
      */
-    private Url url;
-
-    /**
-     * Initialize objects for all tests.
-     */
-    @Before
-    public void init() {
-        this.url = new Url("shortUrl", "longUrl", 301);
-    }
+    private final Url url = new Url("shortUrl", "longUrl", 301);
 
     /**
      * Test correctness of created url.
