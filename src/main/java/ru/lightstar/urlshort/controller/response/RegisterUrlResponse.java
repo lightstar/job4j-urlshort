@@ -20,15 +20,6 @@ public class RegisterUrlResponse {
     }
 
     /**
-     * Constructs <code>RegisterUrlResponse</code> object.
-     *
-     * @param shortUrl short url string for registered url.
-     */
-    public RegisterUrlResponse(final String shortUrl) {
-        this.shortUrl = shortUrl;
-    }
-
-    /**
      * Get short url string for registered url.
      *
      * @return short url string.

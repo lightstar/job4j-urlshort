@@ -7,6 +7,7 @@
  import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
  import org.springframework.security.core.authority.SimpleGrantedAuthority;
  import org.springframework.security.core.context.SecurityContextHolder;
+ import org.springframework.test.annotation.DirtiesContext;
  import org.springframework.test.context.junit4.SpringRunner;
 
  import java.util.Collections;
@@ -91,9 +92,20 @@ public class UtilServiceTest {
     }
 
     /**
+     * Test correctness <code>getHashedPassword</code> method with empty argument.
+     */
+    @Test
+    public void whenGetHashedEmptyPasswordThenEmptyResult() {
+        final String hashedPassword = this.utilService.getHashedPassword("");
+
+        assertThat(hashedPassword, isEmptyString());
+    }
+
+    /**
      * Test correctness of <code>getAuthName</code> method.
      */
     @Test
+    @DirtiesContext
     public void whenGetAuthNameThenResult() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 "testUser", "testPassword"));
@@ -103,9 +115,22 @@ public class UtilServiceTest {
     }
 
     /**
+     * Test correctness of <code>getAuthName</code> method when authentication object is null.
+     */
+    @Test
+    @DirtiesContext
+    public void whenGetAuthNameWithNullAuthenticationThenEmptyResult() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        final String authName = this.utilService.getAuthName();
+
+        assertThat(authName, isEmptyString());
+    }
+
+    /**
      * Test correctness of <code>getAuthRole</code> method.
      */
     @Test
+    @DirtiesContext
     public void whenGetAuthRoleThenResult() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 "testUser", "testPassword",
@@ -113,5 +138,43 @@ public class UtilServiceTest {
         final String authRole = this.utilService.getAuthRole();
 
         assertThat(authRole, is("ROLE_USER"));
+    }
+
+    /**
+     * Test correctness of <code>getAuthRole</code> method when authentication object is null.
+     */
+    @Test
+    @DirtiesContext
+    public void whenGetAuthRoleWithNullAuthenticationThenEmptyResult() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        final String authRole = this.utilService.getAuthRole();
+
+        assertThat(authRole, isEmptyString());
+    }
+
+    /**
+     * Test correctness of <code>getAuthRole</code> method when authorities are empty.
+     */
+    @Test
+    @DirtiesContext
+    public void whenGetAuthRoleWithEmptyAuthoritiesThenEmptyResult() {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                "testUser", "testPassword", Collections.emptyList()));
+        final String authRole = this.utilService.getAuthRole();
+
+        assertThat(authRole, isEmptyString());
+    }
+
+    /**
+     * Test correctness of <code>getAuthRole</code> method when authority is null.
+     */
+    @Test
+    @DirtiesContext
+    public void whenGetAuthRoleWithNullAuthorityThenEmptyResult() {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                "testUser", "testPassword", Collections.singleton(() -> null)));
+        final String authRole = this.utilService.getAuthRole();
+
+        assertThat(authRole, isEmptyString());
     }
 }

@@ -12,7 +12,7 @@ import ru.lightstar.urlshort.model.Url;
 public interface RedirectService {
 
     /**
-     * Get url object for given short url string.
+     * Get url object for given short url string for redirecting.
      *
      * @param shortUrl short url string.
      * @return found <code>Url</code> object.
