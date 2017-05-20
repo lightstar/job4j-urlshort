@@ -83,11 +83,30 @@ public class AccountTest {
     }
 
     /**
-     * Test correctness of <code>equals</code> method with not the same account.
+     * Test correctness of <code>equals</code> method with account with different id.
      */
     @Test
-    public void whenEqualsToNotSameThenFalse() {
-        final Account account = new Account();
+    public void whenEqualsToNotSameIdThenFalse() {
+        final Account account = new Account("test2", "testPassword");
+        assertFalse(this.account.equals(account));
+    }
+
+    /**
+     * Test correctness of <code>equals</code> method with account with different password.
+     */
+    @Test
+    public void whenEqualsToNotSamePasswordThenFalse() {
+        final Account account = new Account("test", "testPassword2");
+        assertFalse(this.account.equals(account));
+    }
+
+    /**
+     * Test correctness of <code>equals</code> method with account with different url map.
+     */
+    @Test
+    public void whenEqualsToNotSameUrlMapThenFalse() {
+        final Account account = new Account("test", "testPassword");
+        account.getUrlMap().put("longUrl", new Url("shortUrl", "longUrl", 301));
         assertFalse(this.account.equals(account));
     }
 
@@ -97,6 +116,14 @@ public class AccountTest {
     @Test
     public void whenEqualsToNullThenFalse() {
         assertFalse(this.account.equals(null));
+    }
+
+    /**
+     * Test correctness of <code>equals</code> method with the value of different class.
+     */
+    @Test
+    public void whenEqualsToObjectThenFalse() {
+        assertFalse(this.account.equals(new Object()));
     }
 
     /**

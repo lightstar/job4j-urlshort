@@ -98,11 +98,39 @@ public class UrlTest {
     }
 
     /**
-     * Test correctness of <code>equals</code> method with not the same url.
+     * Test correctness of <code>equals</code> method with url with different short url string.
      */
     @Test
-    public void whenEqualsToNotSameThenFalse() {
-        final Url url = new Url();
+    public void whenEqualsToNotSameShortUrlThenFalse() {
+        final Url url = new Url("shortUrl2", "longUrl", 301);
+        assertFalse(this.url.equals(url));
+    }
+
+    /**
+     * Test correctness of <code>equals</code> method with url with different long url string.
+     */
+    @Test
+    public void whenEqualsToNotSameLongUrlThenFalse() {
+        final Url url = new Url("shortUrl", "longUrl2", 301);
+        assertFalse(this.url.equals(url));
+    }
+
+    /**
+     * Test correctness of <code>equals</code> method with url with different redirect type.
+     */
+    @Test
+    public void whenEqualsToNotSameRedirectTypeThenFalse() {
+        final Url url = new Url("shortUrl", "longUrl", 302);
+        assertFalse(this.url.equals(url));
+    }
+
+    /**
+     * Test correctness of <code>equals</code> method with url with different hit count.
+     */
+    @Test
+    public void whenEqualsToNotSameHitCountThenFalse() {
+        final Url url = new Url("shortUrl", "longUrl", 301);
+        url.setHitCount(5);
         assertFalse(this.url.equals(url));
     }
 
@@ -112,6 +140,14 @@ public class UrlTest {
     @Test
     public void whenEqualsToNullThenFalse() {
         assertFalse(this.url.equals(null));
+    }
+
+    /**
+     * Test correctness of <code>equals</code> method with the value of different class.
+     */
+    @Test
+    public void whenEqualsToObjectThenFalse() {
+        assertFalse(this.url.equals(new Object()));
     }
 
     /**
