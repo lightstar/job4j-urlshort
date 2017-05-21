@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -27,6 +27,16 @@ public class UtilServiceImpl implements UtilService {
     private static final byte[] HASH_SALT = "u65GmssgJGLZ".getBytes();
 
     /**
+     * Default algorithm used for hashing passwords.
+     */
+    private static final String HASH_ALG_DEF = "SHA-256";
+
+    /**
+     * Encoding of password's characters.
+     */
+    private static final String PASSWORD_ENCODING = "UTF-8";
+
+    /**
      * Object used to get random numbers.
      */
     private final SecureRandom random = new SecureRandom();
@@ -35,6 +45,11 @@ public class UtilServiceImpl implements UtilService {
      * Array of all symbols used for random string generation.
      */
     private final char[] symbols;
+
+    /**
+     * Algorithm used for hashing passwords.
+     */
+    private String hashAlg = HASH_ALG_DEF;
 
     /**
      * Constructs <code>UtilServiceImpl</code> object.
@@ -63,15 +78,31 @@ public class UtilServiceImpl implements UtilService {
      * {@inheritDoc}
      */
     @Override
+    public String getHashAlg() {
+        return this.hashAlg;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setHashAlg(final String hashAlg) {
+        this.hashAlg = hashAlg;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getHashedPassword(final String password) {
         String hashedPassword = "";
 
         if (!password.isEmpty()) {
             try {
-                final MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-                messageDigest.update(password.getBytes("UTF-8"));
+                final MessageDigest messageDigest = MessageDigest.getInstance(this.hashAlg);
+                messageDigest.update(password.getBytes(Charset.forName(PASSWORD_ENCODING)));
                 hashedPassword = Hex.encodeHexString(messageDigest.digest(HASH_SALT));
-            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
         }

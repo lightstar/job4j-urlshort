@@ -1,6 +1,7 @@
 package ru.lightstar.urlshort.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 /**
  * Configuration class for spring security.
@@ -21,9 +23,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /**
-     * Authentication entry point bean needed for basic authentication.
+     * Realm used for basic authentication.
      */
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private static final String REALM = "URL shortener";
 
     /**
      * Authentication provider bean used for authentication by login and password.
@@ -33,14 +35,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * Constructs <code>SecurityConfiguration</code> object.
      *
-     * @param authenticationEntryPoint authentication entry point bean.
      * @param authenticationProvider authentication provider bean.
      */
     @Autowired
-    public SecurityConfiguration(final AuthenticationEntryPoint authenticationEntryPoint,
-                                 final AuthenticationProvider authenticationProvider) {
+    public SecurityConfiguration(final AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
-        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     /**
@@ -56,7 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .httpBasic()
-                .authenticationEntryPoint(this.authenticationEntryPoint);
+                .authenticationEntryPoint(this.authenticationEntryPoint());
     }
 
     /**
@@ -65,5 +64,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(this.authenticationProvider);
+    }
+
+    /**
+     * Authentication entry point bean used for basic authentication.
+     *
+     * @return authentication entry point bean.
+     */
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        final BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
+        authenticationEntryPoint.setRealmName(REALM);
+        return authenticationEntryPoint;
     }
 }

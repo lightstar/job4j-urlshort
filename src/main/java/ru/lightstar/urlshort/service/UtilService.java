@@ -17,10 +17,25 @@ public interface UtilService {
     String getRandomString(int length);
 
     /**
+     * Get algorithm used for hashing passwords.
+     *
+     * @return algorithm used for hashing passwords.
+     */
+    String getHashAlg();
+
+    /**
+     * Set algorithm used for hashing passwords.
+     *
+     * @param hashAlg algorithm used for hashing passwords.
+     */
+    void setHashAlg(String hashAlg);
+
+    /**
      * Generate hashed representation of given password.
      *
      * @param password open password.
      * @return hashed password.
+     * @throws RuntimeException thrown if hash algorithm is unknown.
      */
     String getHashedPassword(String password);
 

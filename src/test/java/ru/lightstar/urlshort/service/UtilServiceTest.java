@@ -59,6 +59,16 @@ public class UtilServiceTest {
     }
 
     /**
+     * Test correctness of <code>setHashAlg</code> and <code>getHashAlg</code> methods.
+     */
+    @Test
+    @DirtiesContext
+    public void whenSetHashAlgThenItChanges() {
+        this.utilService.setHashAlg("testHashAlg");
+        assertThat(this.utilService.getHashAlg(), is("testHashAlg"));
+    }
+
+    /**
      * Test correctness <code>getHashedPassword</code> method.
      */
     @Test
@@ -85,7 +95,7 @@ public class UtilServiceTest {
      */
     @Test
     public void whenGetHashedPasswordTwiceWithDifferentArgumentsThenResultIsDifferent() {
-        final String hashedPassword1 = this.utilService.getHashedPassword("testPassword1");
+        final String hashedPassword1 = this.utilService.getHashedPassword("testPassword");
         final String hashedPassword2 = this.utilService.getHashedPassword("testPassword2");
 
         assertThat(hashedPassword1, not(equalTo(hashedPassword2)));
@@ -99,6 +109,16 @@ public class UtilServiceTest {
         final String hashedPassword = this.utilService.getHashedPassword("");
 
         assertThat(hashedPassword, isEmptyString());
+    }
+
+    /**
+     * Test exception in <code>getHashedPassword</code> method when wrong algorithm is set.
+     */
+    @Test(expected = RuntimeException.class)
+    @DirtiesContext
+    public void whenGetHashedPasswordWithWrongAlgThenException() {
+        this.utilService.setHashAlg("testHashAlg");
+        this.utilService.getHashedPassword("testPassword");
     }
 
     /**
