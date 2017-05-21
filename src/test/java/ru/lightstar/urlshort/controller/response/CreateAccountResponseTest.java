@@ -2,6 +2,7 @@ package ru.lightstar.urlshort.controller.response;
 
 import org.junit.Test;
 import ru.lightstar.urlshort.JsonTestHelper;
+import ru.lightstar.urlshort.TestConstants;
 
 import java.io.IOException;
 
@@ -52,8 +53,8 @@ public class CreateAccountResponseTest {
      */
     @Test
     public void whenSetDescriptionThenItChanges() {
-        this.response.setDescription("testDescription");
-        assertThat(this.response.getDescription(), is("testDescription"));
+        this.response.setDescription(TestConstants.DESCRIPTION);
+        assertThat(this.response.getDescription(), is(TestConstants.DESCRIPTION));
     }
 
     /**
@@ -61,8 +62,8 @@ public class CreateAccountResponseTest {
      */
     @Test
     public void whenSetPasswordThenItChanges() {
-        this.response.setPassword("testPassword");
-        assertThat(this.response.getPassword(), is("testPassword"));
+        this.response.setPassword(TestConstants.PASSWORD);
+        assertThat(this.response.getPassword(), is(TestConstants.PASSWORD));
     }
 
     /**
@@ -71,14 +72,14 @@ public class CreateAccountResponseTest {
     @Test
     public void whenSerializeToJsonThenResult() throws IOException {
         this.response.setSuccess(true);
-        this.response.setDescription("testDescription");
-        this.response.setPassword("testPassword");
+        this.response.setDescription(TestConstants.DESCRIPTION);
+        this.response.setPassword(TestConstants.PASSWORD);
 
         final String json = this.jsonTestHelper.encode(this.response);
 
         assertThat(this.jsonTestHelper.booleanField(json, "success"), is(true));
-        assertThat(this.jsonTestHelper.textField(json, "description"), is("testDescription"));
-        assertThat(this.jsonTestHelper.textField(json, "password"), is("testPassword"));
+        assertThat(this.jsonTestHelper.textField(json, "description"), is(TestConstants.DESCRIPTION));
+        assertThat(this.jsonTestHelper.textField(json, "password"), is(TestConstants.PASSWORD));
     }
 
     /**
@@ -86,12 +87,12 @@ public class CreateAccountResponseTest {
      */
     @Test
     public void whenSerializeToJsonWithNotPasswordThenResult() throws IOException {
-        this.response.setDescription("testDescription");
+        this.response.setDescription(TestConstants.DESCRIPTION);
 
         final String json = this.jsonTestHelper.encode(this.response);
 
         assertThat(this.jsonTestHelper.booleanField(json, "success"), is(false));
-        assertThat(this.jsonTestHelper.textField(json, "description"), is("testDescription"));
+        assertThat(this.jsonTestHelper.textField(json, "description"), is(TestConstants.DESCRIPTION));
         assertFalse(this.jsonTestHelper.hasField(json, "password"));
     }
 }

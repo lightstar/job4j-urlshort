@@ -2,6 +2,7 @@ package ru.lightstar.urlshort.controller.request;
 
 import org.junit.Test;
 import ru.lightstar.urlshort.JsonTestHelper;
+import ru.lightstar.urlshort.TestConstants;
 
 import java.io.IOException;
 
@@ -35,8 +36,8 @@ public class CreateAccountRequestTest {
      */
     @Test
     public void whenSetAccountIdThenItChanges() {
-        this.request.setAccountId("test");
-        assertThat(this.request.getAccountId(), is("test"));
+        this.request.setAccountId(TestConstants.ID);
+        assertThat(this.request.getAccountId(), is(TestConstants.ID));
     }
 
     /**
@@ -44,8 +45,8 @@ public class CreateAccountRequestTest {
      */
     @Test
     public void whenDeserializeFromJsonThenResult() throws IOException {
-        final String json = "{\"AccountId\":\"test\"}";
+        final String json = String.format("{\"AccountId\":\"%s\"}", TestConstants.ID);
         final CreateAccountRequest request = new JsonTestHelper().decode(json, CreateAccountRequest.class);
-        assertThat(request.getAccountId(), is("test"));
+        assertThat(request.getAccountId(), is(TestConstants.ID));
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.lightstar.urlshort.TestConstants;
 import ru.lightstar.urlshort.exception.ShortUrlAlreadyExistsException;
 import ru.lightstar.urlshort.exception.UrlShortException;
 import ru.lightstar.urlshort.model.Account;
@@ -62,9 +63,9 @@ public class ConfigServiceTest extends Mockito {
      */
     @Test
     public void whenGetAccountByIdThenCallRepository() throws UrlShortException {
-        this.configService.getAccountById("test");
+        this.configService.getAccountById(TestConstants.ID);
 
-        verify(this.accountRepository, times(1)).getById("test");
+        verify(this.accountRepository, times(1)).getById(TestConstants.ID);
         verifyNoMoreInteractions(this.accountRepository);
     }
 
@@ -73,18 +74,18 @@ public class ConfigServiceTest extends Mockito {
      */
     @Test
     public void whenCreateAccountThenItCreatesUsingUtilServiceAndRepository() throws UrlShortException {
-        when(this.utilService.getRandomString(anyInt())).thenReturn("testPassword");
-        when(this.utilService.getHashedPassword("testPassword")).thenReturn("hashedTestPassword");
+        when(this.utilService.getRandomString(anyInt())).thenReturn(TestConstants.OPEN_PASSWORD);
+        when(this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD)).thenReturn(TestConstants.PASSWORD);
 
-        final Account account = new Account("test", "hashedTestPassword");
-        when(this.accountRepository.create("test", "hashedTestPassword")).thenReturn(account);
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
+        when(this.accountRepository.create(TestConstants.ID, TestConstants.PASSWORD)).thenReturn(account);
 
-        final AccountWithOpenPassword accountWithOpenPassword = this.configService.createAccount("test");
+        final AccountWithOpenPassword accountWithOpenPassword = this.configService.createAccount(TestConstants.ID);
 
         assertThat(accountWithOpenPassword.getAccount(), IsSame.sameInstance(account));
-        assertThat(accountWithOpenPassword.getOpenPassword(), is("testPassword"));
+        assertThat(accountWithOpenPassword.getOpenPassword(), is(TestConstants.OPEN_PASSWORD));
 
-        verify(this.accountRepository, times(1)).create("test", "hashedTestPassword");
+        verify(this.accountRepository, times(1)).create(TestConstants.ID, TestConstants.PASSWORD);
         verifyNoMoreInteractions(this.accountRepository);
     }
 
@@ -93,17 +94,19 @@ public class ConfigServiceTest extends Mockito {
      */
     @Test
     public void whenRegisterUrlThenItRegistersUsingUtilServiceAndRepository() throws UrlShortException {
-        when(this.utilService.getRandomString(anyInt())).thenReturn("shortUrl");
+        when(this.utilService.getRandomString(anyInt())).thenReturn(TestConstants.SHORT_URL);
 
-        final Account account = new Account("test", "testPassword");
-        final Url url = new Url("shortUrl", "longUrl", 301);
-        when(this.urlRepository.register(account, "shortUrl", "longUrl", 301)).thenReturn(url);
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        when(this.urlRepository.register(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE)).thenReturn(url);
 
-        final Url resultUrl = this.configService.registerUrl(account, "longUrl", 301);
+        final Url resultUrl = this.configService.registerUrl(account, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
 
         assertThat(resultUrl, IsSame.sameInstance(url));
-        verify(this.urlRepository, times(1)).register(account, "shortUrl",
-                "longUrl", 301);
+        verify(this.urlRepository, times(1)).register(account, TestConstants.SHORT_URL,
+                TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
         verifyNoMoreInteractions(this.urlRepository);
     }
 
@@ -112,21 +115,24 @@ public class ConfigServiceTest extends Mockito {
      */
     @Test
     public void whenRegisterUrlAndShortUrlCollisionHappensThenItWillTryAgain() throws UrlShortException {
-        when(this.utilService.getRandomString(anyInt())).thenReturn("shortUrl").thenReturn("anotherShortUrl");
+        when(this.utilService.getRandomString(anyInt())).thenReturn(TestConstants.SHORT_URL)
+                .thenReturn(TestConstants.SHORT_URL2);
 
-        final Account account = new Account("test", "testPassword");
-        final Url url = new Url("anotherShortUrl", "longUrl", 301);
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
+        final Url url = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
 
-        when(this.urlRepository.register(account, "shortUrl", "longUrl", 301))
+        when(this.urlRepository.register(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE))
                 .thenThrow(new ShortUrlAlreadyExistsException("Short url already exists"));
-        when(this.urlRepository.register(account, "anotherShortUrl", "longUrl", 301))
-                .thenReturn(url);
+        when(this.urlRepository.register(account, TestConstants.SHORT_URL2, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE)).thenReturn(url);
 
-        final Url resultUrl = this.configService.registerUrl(account, "longUrl", 301);
+        final Url resultUrl = this.configService.registerUrl(account, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
 
         assertThat(resultUrl, IsSame.sameInstance(url));
         verify(this.urlRepository, times(2)).register(same(account), anyString(),
-                eq("longUrl"), eq(301));
+                eq(TestConstants.LONG_URL), eq(TestConstants.REDIRECT_TYPE));
         verifyNoMoreInteractions(this.urlRepository);
     }
 
@@ -135,21 +141,22 @@ public class ConfigServiceTest extends Mockito {
      */
     @Test
     public void whenGetStatisticThenResult() {
-        final Url url1 = new Url("shortUrl1", "longUrl1", 301);
-        url1.setHitCount(5);
-        final Url url2 = new Url("shortUrl2", "longUrl2", 302);
-        url2.setHitCount(12);
+        final Url url1 = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        url1.setHitCount(TestConstants.HIT_COUNT);
+        final Url url2 = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL2, TestConstants.REDIRECT_TYPE2);
+        url2.setHitCount(TestConstants.HIT_COUNT2);
 
         final Map<String, Url> urlMap = new HashMap<>();
-        urlMap.put("longUrl1", url1);
-        urlMap.put("longUrl2", url2);
+        urlMap.put(TestConstants.LONG_URL, url1);
+        urlMap.put(TestConstants.LONG_URL2, url2);
 
-        final Account account = new Account("test", "testPassword");
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
         account.setUrlMap(urlMap);
 
         final Map<String, Integer> statisticMap = this.configService.getStatistic(account);
 
         assertThat(statisticMap.keySet(), hasSize(2));
-        assertThat(statisticMap, allOf(hasEntry("longUrl1", 5), hasEntry("longUrl2", 12)));
+        assertThat(statisticMap, allOf(hasEntry(TestConstants.LONG_URL, TestConstants.HIT_COUNT),
+                hasEntry(TestConstants.LONG_URL2, TestConstants.HIT_COUNT2)));
     }
 }

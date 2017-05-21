@@ -2,6 +2,7 @@ package ru.lightstar.urlshort.controller.request;
 
 import org.junit.Test;
 import ru.lightstar.urlshort.JsonTestHelper;
+import ru.lightstar.urlshort.TestConstants;
 
 import java.io.IOException;
 
@@ -36,8 +37,8 @@ public class RegisterUrlRequestTest {
      */
     @Test
     public void whenSetLongUrlThenItChanges() {
-        this.request.setLongUrl("longUrl");
-        assertThat(this.request.getLongUrl(), is("longUrl"));
+        this.request.setLongUrl(TestConstants.LONG_URL);
+        assertThat(this.request.getLongUrl(), is(TestConstants.LONG_URL));
     }
 
     /**
@@ -45,8 +46,8 @@ public class RegisterUrlRequestTest {
      */
     @Test
     public void whenSetRedirectTypeThenItChanges() {
-        this.request.setRedirectType(301);
-        assertThat(this.request.getRedirectType(), is(301));
+        this.request.setRedirectType(TestConstants.REDIRECT_TYPE);
+        assertThat(this.request.getRedirectType(), is(TestConstants.REDIRECT_TYPE));
     }
 
     /**
@@ -54,9 +55,10 @@ public class RegisterUrlRequestTest {
      */
     @Test
     public void whenDeserializeFromJsonThenResult() throws IOException {
-        final String json = "{\"url\":\"test\",\"redirectType\":301}";
+        final String json = String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
         final RegisterUrlRequest request = new JsonTestHelper().decode(json, RegisterUrlRequest.class);
-        assertThat(request.getLongUrl(), is("test"));
-        assertThat(request.getRedirectType(), is(301));
+        assertThat(request.getLongUrl(), is(TestConstants.LONG_URL));
+        assertThat(request.getRedirectType(), is(TestConstants.REDIRECT_TYPE));
     }
 }

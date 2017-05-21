@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.lightstar.urlshort.TestConstants;
 import ru.lightstar.urlshort.exception.*;
 import ru.lightstar.urlshort.model.Account;
 import ru.lightstar.urlshort.model.Url;
@@ -37,13 +38,13 @@ public class MemoryStorageTest {
      */
     @Test
     public void whenCreateAccountThenItCreates() throws UrlShortException {
-        final Account account = this.memoryStorage.createAccount("test", "testPassword");
+        final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
 
-        assertThat(account.getId(), is("test"));
-        assertThat(account.getPassword(), is("testPassword"));
+        assertThat(account.getId(), is(TestConstants.ID));
+        assertThat(account.getPassword(), is(TestConstants.PASSWORD));
         assertThat(account.getUrlMap(), notNullValue());
         assertThat(account.getUrlMap().keySet(), is(empty()));
-        assertThat(this.memoryStorage.getAccountById("test"), IsSame.sameInstance(account));
+        assertThat(this.memoryStorage.getAccountById(TestConstants.ID), IsSame.sameInstance(account));
     }
 
     /**
@@ -51,7 +52,7 @@ public class MemoryStorageTest {
      */
     @Test(expected = AccountNotFoundException.class)
     public void whenGetAbsentAccountThenException() throws UrlShortException {
-        this.memoryStorage.getAccountById("test");
+        this.memoryStorage.getAccountById(TestConstants.ID);
     }
 
     /**
@@ -59,8 +60,8 @@ public class MemoryStorageTest {
      */
     @Test(expected = AccountAlreadyExistsException.class)
     public void whenCreateAccountWithSameIdThenException() throws UrlShortException {
-        this.memoryStorage.createAccount("test", "testPassword");
-        this.memoryStorage.createAccount("test", "testPassword");
+        this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
+        this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
     }
 
     /**
@@ -68,16 +69,17 @@ public class MemoryStorageTest {
      */
     @Test
     public void whenRegisterUrlThenItRegisters() throws UrlShortException {
-        final Account account = this.memoryStorage.createAccount("test", "testPassword");
-        final Url url = this.memoryStorage.registerUrl(account, "shortUrl", "longUrl", 301);
+        final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
+        final Url url = this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
 
-        assertThat(url.getShortUrl(), is("shortUrl"));
-        assertThat(url.getLongUrl(), is("longUrl"));
-        assertThat(url.getRedirectType(), is(301));
+        assertThat(url.getShortUrl(), is(TestConstants.SHORT_URL));
+        assertThat(url.getLongUrl(), is(TestConstants.LONG_URL));
+        assertThat(url.getRedirectType(), is(TestConstants.REDIRECT_TYPE));
         assertThat(url.getHitCount(), is(0));
         assertThat(account.getUrlMap().keySet(), hasSize(1));
-        assertThat(account.getUrlMap().get("longUrl"), is(url));
-        assertThat(this.memoryStorage.getUrlByShortUrl("shortUrl"), IsSame.sameInstance(url));
+        assertThat(account.getUrlMap().get(TestConstants.LONG_URL), is(url));
+        assertThat(this.memoryStorage.getUrlByShortUrl(TestConstants.SHORT_URL), IsSame.sameInstance(url));
     }
 
     /**
@@ -85,7 +87,7 @@ public class MemoryStorageTest {
      */
     @Test(expected = UrlNotFoundException.class)
     public void whenGetAbsentUrlThenException() throws UrlShortException {
-        this.memoryStorage.getUrlByShortUrl("shortUrl");
+        this.memoryStorage.getUrlByShortUrl(TestConstants.SHORT_URL);
     }
 
     /**
@@ -94,10 +96,12 @@ public class MemoryStorageTest {
      */
     @Test(expected = ShortUrlAlreadyExistsException.class)
     public void whenRegisterUrlWithSameShortUrlForSameAccountThenException() throws UrlShortException {
-        final Account account = this.memoryStorage.createAccount("test", "testPassword");
+        final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
 
-        this.memoryStorage.registerUrl(account, "shortUrl", "longUrl", 301);
-        this.memoryStorage.registerUrl(account, "shortUrl", "longUrl2", 301);
+        this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
+        this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL2,
+                TestConstants.REDIRECT_TYPE);
     }
 
     /**
@@ -106,11 +110,13 @@ public class MemoryStorageTest {
      */
     @Test(expected = ShortUrlAlreadyExistsException.class)
     public void whenRegisterUrlWithSameShortUrlForDifferentAccountThenException() throws UrlShortException {
-        final Account account = this.memoryStorage.createAccount("test", "testPassword");
-        final Account account2 = this.memoryStorage.createAccount("test2", "testPassword2");
+        final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
+        final Account account2 = this.memoryStorage.createAccount(TestConstants.ID2, TestConstants.PASSWORD2);
 
-        this.memoryStorage.registerUrl(account, "shortUrl", "longUrl", 301);
-        this.memoryStorage.registerUrl(account2, "shortUrl", "longUrl2", 301);
+        this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
+        this.memoryStorage.registerUrl(account2, TestConstants.SHORT_URL, TestConstants.LONG_URL2,
+                TestConstants.REDIRECT_TYPE);
     }
 
     /**
@@ -119,10 +125,12 @@ public class MemoryStorageTest {
      */
     @Test(expected = LongUrlAlreadyExistsException.class)
     public void whenRegisterUrlWithSameLongUrlForSameAccountThenException() throws UrlShortException {
-        final Account account = this.memoryStorage.createAccount("test", "testPassword");
+        final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
 
-        this.memoryStorage.registerUrl(account, "shortUrl", "longUrl", 301);
-        this.memoryStorage.registerUrl(account, "shortUrl2", "longUrl", 301);
+        this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
+        this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL2, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
     }
 
     /**
@@ -131,13 +139,15 @@ public class MemoryStorageTest {
      */
     @Test
     public void whenRegisterUrlWithSameLongUrlForDifferentAccountThenItRegisters() throws UrlShortException {
-        final Account account = this.memoryStorage.createAccount("test", "testPassword");
-        final Account account2 = this.memoryStorage.createAccount("test2", "testPassword2");
+        final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
+        final Account account2 = this.memoryStorage.createAccount(TestConstants.ID2, TestConstants.PASSWORD2);
 
-        this.memoryStorage.registerUrl(account, "shortUrl", "longUrl", 301);
-        final Url url = this.memoryStorage.registerUrl(account2, "shortUrl2", "longUrl", 301);
+        this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
+        final Url url = this.memoryStorage.registerUrl(account2, TestConstants.SHORT_URL2, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
 
-        assertThat(this.memoryStorage.getUrlByShortUrl("shortUrl2"), IsSame.sameInstance(url));
+        assertThat(this.memoryStorage.getUrlByShortUrl(TestConstants.SHORT_URL2), IsSame.sameInstance(url));
     }
 
     /**
@@ -145,8 +155,9 @@ public class MemoryStorageTest {
      */
     @Test
     public void whenIncreaseHitCountThenItIncreases() throws UrlShortException {
-        final Account account = this.memoryStorage.createAccount("test", "testPassword");
-        final Url url = this.memoryStorage.registerUrl(account, "shortUrl", "longUrl", 301);
+        final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
+        final Url url = this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
         this.memoryStorage.increaseUrlHitCount(url);
 
         assertThat(url.getHitCount(), is(1));

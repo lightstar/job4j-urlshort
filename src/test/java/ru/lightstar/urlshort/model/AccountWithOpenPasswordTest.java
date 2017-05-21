@@ -1,6 +1,7 @@
 package ru.lightstar.urlshort.model;
 
 import org.junit.Test;
+import ru.lightstar.urlshort.TestConstants;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -18,11 +19,11 @@ public class AccountWithOpenPasswordTest {
      */
     @Test
     public void whenCreateAccountWithOpenPasswordThenAllFieldsInitialized() {
-        final Account account = new Account("test", "testPassword");
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
         final AccountWithOpenPassword accountWithOpenPassword = new AccountWithOpenPassword(account,
-                "testOpenPassword");
+                TestConstants.OPEN_PASSWORD);
 
-        assertThat(accountWithOpenPassword.getOpenPassword(), is("testOpenPassword"));
+        assertThat(accountWithOpenPassword.getOpenPassword(), is(TestConstants.OPEN_PASSWORD));
         assertThat(accountWithOpenPassword.getAccount(), is(account));
     }
 }

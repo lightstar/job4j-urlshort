@@ -2,6 +2,7 @@ package ru.lightstar.urlshort.controller.response;
 
 import org.junit.Test;
 import ru.lightstar.urlshort.JsonTestHelper;
+import ru.lightstar.urlshort.TestConstants;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ public class ErrorResponseTest {
     /**
      * <code>ErrorResponse</code> object used in all tests.
      */
-    private final ErrorResponse response = new ErrorResponse("testError");
+    private final ErrorResponse response = new ErrorResponse(TestConstants.ERROR);
 
     /**
      * Helper object used to test JSON serialization.
@@ -32,7 +33,7 @@ public class ErrorResponseTest {
      */
     @Test
     public void whenCreateResponseThenAllFieldsInitialized() {
-        assertThat(this.response.getError(), is("testError"));
+        assertThat(this.response.getError(), is(TestConstants.ERROR));
     }
 
     /**
@@ -49,8 +50,8 @@ public class ErrorResponseTest {
      */
     @Test
     public void whenSetSuccessThenItChanges() {
-        this.response.setError("testError");
-        assertThat(this.response.getError(), is("testError"));
+        this.response.setError(TestConstants.ERROR);
+        assertThat(this.response.getError(), is(TestConstants.ERROR));
     }
 
     /**
@@ -59,6 +60,6 @@ public class ErrorResponseTest {
     @Test
     public void whenSerializeToJsonThenResult() throws IOException {
         final String json = this.jsonTestHelper.encode(this.response);
-        assertThat(this.jsonTestHelper.textField(json, "error"), is("testError"));
+        assertThat(this.jsonTestHelper.textField(json, "error"), is(TestConstants.ERROR));
     }
 }

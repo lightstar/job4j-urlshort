@@ -2,6 +2,7 @@ package ru.lightstar.urlshort.model;
 
 import org.hamcrest.core.IsSame;
 import org.junit.Test;
+import ru.lightstar.urlshort.TestConstants;
 
 import java.util.Collections;
 
@@ -19,15 +20,15 @@ public class AccountTest {
     /**
      * <code>Account</code> object used in all tests.
      */
-    private final Account account = new Account("test", "testPassword");
+    private final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
 
     /**
      * Test correctness of created account.
      */
     @Test
     public void whenCreateAccountThenAllFieldsInitialized() {
-        assertThat(this.account.getId(), is("test"));
-        assertThat(this.account.getPassword(), is("testPassword"));
+        assertThat(this.account.getId(), is(TestConstants.ID));
+        assertThat(this.account.getPassword(), is(TestConstants.PASSWORD));
         assertThat(this.account.getUrlMap(), notNullValue());
         assertThat(this.account.getUrlMap().keySet(), is(empty()));
     }
@@ -49,8 +50,8 @@ public class AccountTest {
      */
     @Test
     public void whenSetIdThenItChanges() {
-        this.account.setId("test2");
-        assertThat(this.account.getId(), is("test2"));
+        this.account.setId(TestConstants.ID2);
+        assertThat(this.account.getId(), is(TestConstants.ID2));
     }
 
     /**
@@ -58,8 +59,8 @@ public class AccountTest {
      */
     @Test
     public void whenSetPasswordThenItChanges() {
-        this.account.setPassword("testPassword2");
-        assertThat(this.account.getPassword(), is("testPassword2"));
+        this.account.setPassword(TestConstants.PASSWORD2);
+        assertThat(this.account.getPassword(), is(TestConstants.PASSWORD2));
     }
 
     /**
@@ -67,10 +68,10 @@ public class AccountTest {
      */
     @Test
     public void whenSetUrlMapThenItChanges() {
-        final Url url = new Url("testUrl", "testLongUrl", 301);
-        this.account.setUrlMap(Collections.singletonMap("testUrl", url));
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        this.account.setUrlMap(Collections.singletonMap(TestConstants.LONG_URL, url));
         assertThat(this.account.getUrlMap().keySet(), hasSize(1));
-        assertThat(this.account.getUrlMap().get("testUrl"), IsSame.sameInstance(url));
+        assertThat(this.account.getUrlMap().get(TestConstants.LONG_URL), IsSame.sameInstance(url));
     }
 
     /**
@@ -78,7 +79,7 @@ public class AccountTest {
      */
     @Test
     public void whenEqualsToSameThenTrue() {
-        final Account account = new Account("test", "testPassword");
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
         assertTrue(this.account.equals(account));
     }
 
@@ -87,7 +88,7 @@ public class AccountTest {
      */
     @Test
     public void whenEqualsToNotSameIdThenFalse() {
-        final Account account = new Account("test2", "testPassword");
+        final Account account = new Account(TestConstants.ID2, TestConstants.PASSWORD);
         assertFalse(this.account.equals(account));
     }
 
@@ -96,7 +97,7 @@ public class AccountTest {
      */
     @Test
     public void whenEqualsToNotSamePasswordThenFalse() {
-        final Account account = new Account("test", "testPassword2");
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD2);
         assertFalse(this.account.equals(account));
     }
 
@@ -105,8 +106,9 @@ public class AccountTest {
      */
     @Test
     public void whenEqualsToNotSameUrlMapThenFalse() {
-        final Account account = new Account("test", "testPassword");
-        account.getUrlMap().put("longUrl", new Url("shortUrl", "longUrl", 301));
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
+        account.getUrlMap().put(TestConstants.LONG_URL, new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE));
         assertFalse(this.account.equals(account));
     }
 
@@ -131,7 +133,7 @@ public class AccountTest {
      */
     @Test
     public void whenCompareHashCodesOfTheSameAccountsThenTrue() {
-        final Account account = new Account("test", "testPassword");
-        assertThat(this.account.hashCode(), is(account.hashCode()));
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
+        assertTrue(this.account.hashCode() == account.hashCode());
     }
 }

@@ -9,6 +9,7 @@
  import org.springframework.security.core.context.SecurityContextHolder;
  import org.springframework.test.annotation.DirtiesContext;
  import org.springframework.test.context.junit4.SpringRunner;
+ import ru.lightstar.urlshort.TestConstants;
 
  import java.util.Collections;
 
@@ -64,8 +65,8 @@ public class UtilServiceTest {
     @Test
     @DirtiesContext
     public void whenSetHashAlgThenItChanges() {
-        this.utilService.setHashAlg("testHashAlg");
-        assertThat(this.utilService.getHashAlg(), is("testHashAlg"));
+        this.utilService.setHashAlg(TestConstants.HASH_ALG);
+        assertThat(this.utilService.getHashAlg(), is(TestConstants.HASH_ALG));
     }
 
     /**
@@ -73,9 +74,9 @@ public class UtilServiceTest {
      */
     @Test
     public void whenGetHashedPasswordThenResult() {
-        final String hashedPassword = this.utilService.getHashedPassword("testPassword");
+        final String hashedPassword = this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD);
 
-        assertThat(hashedPassword, not(equalTo("testPassword")));
+        assertThat(hashedPassword, not(equalTo(TestConstants.OPEN_PASSWORD)));
         assertThat(hashedPassword.length(), greaterThan(0));
     }
 
@@ -84,8 +85,8 @@ public class UtilServiceTest {
      */
     @Test
     public void whenGetHashedPasswordTwiceWithSamePasswordThenResultIsTheSame() {
-        final String hashedPassword1 = this.utilService.getHashedPassword("testPassword");
-        final String hashedPassword2 = this.utilService.getHashedPassword("testPassword");
+        final String hashedPassword1 = this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD);
+        final String hashedPassword2 = this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD);
 
         assertThat(hashedPassword1, equalTo(hashedPassword2));
     }
@@ -95,8 +96,8 @@ public class UtilServiceTest {
      */
     @Test
     public void whenGetHashedPasswordTwiceWithDifferentArgumentsThenResultIsDifferent() {
-        final String hashedPassword1 = this.utilService.getHashedPassword("testPassword");
-        final String hashedPassword2 = this.utilService.getHashedPassword("testPassword2");
+        final String hashedPassword1 = this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD);
+        final String hashedPassword2 = this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD2);
 
         assertThat(hashedPassword1, not(equalTo(hashedPassword2)));
     }
@@ -117,8 +118,8 @@ public class UtilServiceTest {
     @Test(expected = RuntimeException.class)
     @DirtiesContext
     public void whenGetHashedPasswordWithWrongAlgThenException() {
-        this.utilService.setHashAlg("testHashAlg");
-        this.utilService.getHashedPassword("testPassword");
+        this.utilService.setHashAlg(TestConstants.HASH_ALG);
+        this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD);
     }
 
     /**
@@ -128,10 +129,10 @@ public class UtilServiceTest {
     @DirtiesContext
     public void whenGetAuthNameThenResult() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                "testUser", "testPassword"));
+                TestConstants.ID, TestConstants.PASSWORD));
         final String authName = this.utilService.getAuthName();
 
-        assertThat(authName, is("testUser"));
+        assertThat(authName, is(TestConstants.ID));
     }
 
     /**
@@ -153,11 +154,11 @@ public class UtilServiceTest {
     @DirtiesContext
     public void whenGetAuthRoleThenResult() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                "testUser", "testPassword",
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))));
+                TestConstants.ID, TestConstants.PASSWORD,
+                Collections.singleton(new SimpleGrantedAuthority(TestConstants.ROLE))));
         final String authRole = this.utilService.getAuthRole();
 
-        assertThat(authRole, is("ROLE_USER"));
+        assertThat(authRole, is(TestConstants.ROLE));
     }
 
     /**
@@ -179,7 +180,7 @@ public class UtilServiceTest {
     @DirtiesContext
     public void whenGetAuthRoleWithEmptyAuthoritiesThenEmptyResult() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                "testUser", "testPassword", Collections.emptyList()));
+                TestConstants.ID, TestConstants.PASSWORD, Collections.emptyList()));
         final String authRole = this.utilService.getAuthRole();
 
         assertThat(authRole, isEmptyString());
@@ -192,7 +193,7 @@ public class UtilServiceTest {
     @DirtiesContext
     public void whenGetAuthRoleWithNullAuthorityThenEmptyResult() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                "testUser", "testPassword", Collections.singleton(() -> null)));
+                TestConstants.ID, TestConstants.PASSWORD, Collections.singleton(() -> null)));
         final String authRole = this.utilService.getAuthRole();
 
         assertThat(authRole, isEmptyString());

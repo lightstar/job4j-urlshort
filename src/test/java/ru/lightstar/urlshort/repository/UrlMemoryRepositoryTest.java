@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.lightstar.urlshort.TestConstants;
 import ru.lightstar.urlshort.exception.UrlShortException;
 import ru.lightstar.urlshort.model.Account;
 import ru.lightstar.urlshort.model.Url;
@@ -39,8 +40,8 @@ public class UrlMemoryRepositoryTest extends Mockito {
      */
     @Test
     public void whenGetByShortThenCallMemoryStorage() throws UrlShortException {
-        this.urlMemoryRepository.getByShort("shortUrl");
-        verify(this.memoryStorage, times(1)).getUrlByShortUrl("shortUrl");
+        this.urlMemoryRepository.getByShort(TestConstants.SHORT_URL);
+        verify(this.memoryStorage, times(1)).getUrlByShortUrl(TestConstants.SHORT_URL);
         verifyNoMoreInteractions(this.memoryStorage);
     }
 
@@ -49,10 +50,11 @@ public class UrlMemoryRepositoryTest extends Mockito {
      */
     @Test
     public void whenRegisterThenCallMemoryStorage() throws UrlShortException {
-        final Account account = new Account("test", "testPassword");
-        this.urlMemoryRepository.register(account, "shortUrl", "longUrl", 301);
-        verify(this.memoryStorage, times(1)).registerUrl(account, "shortUrl",
-                "longUrl", 301);
+        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
+        this.urlMemoryRepository.register(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE);
+        verify(this.memoryStorage, times(1)).registerUrl(account, TestConstants.SHORT_URL,
+                TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
         verifyNoMoreInteractions(this.memoryStorage);
     }
 
@@ -61,7 +63,7 @@ public class UrlMemoryRepositoryTest extends Mockito {
      */
     @Test
     public void whenIncreaseHitCountThenCallMemoryStorage() throws UrlShortException {
-        final Url url = new Url("shortUrl", "longUrl", 301);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
         this.urlMemoryRepository.increaseHitCount(url);
         verify(this.memoryStorage, times(1)).increaseUrlHitCount(url);
         verifyNoMoreInteractions(this.memoryStorage);

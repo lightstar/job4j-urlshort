@@ -2,6 +2,7 @@ package ru.lightstar.urlshort.controller.response;
 
 import org.junit.Test;
 import ru.lightstar.urlshort.JsonTestHelper;
+import ru.lightstar.urlshort.TestConstants;
 
 import java.io.IOException;
 
@@ -40,8 +41,8 @@ public class RegisterUrlResponseTest {
      */
     @Test
     public void whenSetShortUrlThenItChanges() {
-        this.response.setShortUrl("shortUrl");
-        assertThat(this.response.getShortUrl(), is("shortUrl"));
+        this.response.setShortUrl(TestConstants.SHORT_URL);
+        assertThat(this.response.getShortUrl(), is(TestConstants.SHORT_URL));
     }
 
     /**
@@ -49,8 +50,8 @@ public class RegisterUrlResponseTest {
      */
     @Test
     public void whenSerializeToJsonThenResult() throws IOException {
-        this.response.setShortUrl("shortUrl");
+        this.response.setShortUrl(TestConstants.SHORT_URL);
         final String json = this.jsonTestHelper.encode(this.response);
-        assertThat(this.jsonTestHelper.textField(json, "shortUrl"), is("shortUrl"));
+        assertThat(this.jsonTestHelper.textField(json, "shortUrl"), is(TestConstants.SHORT_URL));
     }
 }

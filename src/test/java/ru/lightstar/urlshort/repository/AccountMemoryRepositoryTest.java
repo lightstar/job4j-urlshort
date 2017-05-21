@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.lightstar.urlshort.TestConstants;
 import ru.lightstar.urlshort.exception.UrlShortException;
 import ru.lightstar.urlshort.storage.MemoryStorage;
 
@@ -37,8 +38,8 @@ public class AccountMemoryRepositoryTest extends Mockito {
      */
     @Test
     public void whenGetByIdThenCallMemoryStorage() throws UrlShortException {
-        this.accountMemoryRepository.getById("test");
-        verify(this.memoryStorage, times(1)).getAccountById("test");
+        this.accountMemoryRepository.getById(TestConstants.ID);
+        verify(this.memoryStorage, times(1)).getAccountById(TestConstants.ID);
         verifyNoMoreInteractions(this.memoryStorage);
     }
 
@@ -47,8 +48,9 @@ public class AccountMemoryRepositoryTest extends Mockito {
      */
     @Test
     public void whenCreateThenCallMemoryStorage() throws UrlShortException {
-        this.accountMemoryRepository.create("test", "testPassword");
-        verify(this.memoryStorage, times(1)).createAccount("test", "testPassword");
+        this.accountMemoryRepository.create(TestConstants.ID, TestConstants.PASSWORD);
+        verify(this.memoryStorage, times(1)).createAccount(TestConstants.ID,
+                TestConstants.PASSWORD);
         verifyNoMoreInteractions(this.memoryStorage);
     }
 }
