@@ -97,16 +97,17 @@ public class ConfigServiceTest extends Mockito {
         when(this.utilService.getRandomString(anyInt())).thenReturn(TestConstants.SHORT_URL);
 
         final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         when(this.urlRepository.register(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE)).thenReturn(url);
+                TestConstants.REDIRECT_TYPE_PERMANENT)).thenReturn(url);
 
         final Url resultUrl = this.configService.registerUrl(account, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
 
         assertThat(resultUrl, IsSame.sameInstance(url));
         verify(this.urlRepository, times(1)).register(account, TestConstants.SHORT_URL,
-                TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+                TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT);
         verifyNoMoreInteractions(this.urlRepository);
     }
 
@@ -119,20 +120,21 @@ public class ConfigServiceTest extends Mockito {
                 .thenReturn(TestConstants.SHORT_URL2);
 
         final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
-        final Url url = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
 
         when(this.urlRepository.register(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE))
+                TestConstants.REDIRECT_TYPE_PERMANENT))
                 .thenThrow(new ShortUrlAlreadyExistsException("Short url already exists"));
         when(this.urlRepository.register(account, TestConstants.SHORT_URL2, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE)).thenReturn(url);
+                TestConstants.REDIRECT_TYPE_PERMANENT)).thenReturn(url);
 
         final Url resultUrl = this.configService.registerUrl(account, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
 
         assertThat(resultUrl, IsSame.sameInstance(url));
         verify(this.urlRepository, times(2)).register(same(account), anyString(),
-                eq(TestConstants.LONG_URL), eq(TestConstants.REDIRECT_TYPE));
+                eq(TestConstants.LONG_URL), eq(TestConstants.REDIRECT_TYPE_PERMANENT));
         verifyNoMoreInteractions(this.urlRepository);
     }
 
@@ -141,9 +143,11 @@ public class ConfigServiceTest extends Mockito {
      */
     @Test
     public void whenGetStatisticThenResult() {
-        final Url url1 = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url1 = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         url1.setHitCount(TestConstants.HIT_COUNT);
-        final Url url2 = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL2, TestConstants.REDIRECT_TYPE2);
+        final Url url2 = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL2,
+                TestConstants.REDIRECT_TYPE_TEMPORARY);
         url2.setHitCount(TestConstants.HIT_COUNT2);
 
         final Map<String, Url> urlMap = new HashMap<>();

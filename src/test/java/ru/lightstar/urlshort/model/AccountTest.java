@@ -68,7 +68,7 @@ public class AccountTest {
      */
     @Test
     public void whenSetUrlMapThenItChanges() {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT);
         this.account.setUrlMap(Collections.singletonMap(TestConstants.LONG_URL, url));
         assertThat(this.account.getUrlMap().keySet(), hasSize(1));
         assertThat(this.account.getUrlMap().get(TestConstants.LONG_URL), IsSame.sameInstance(url));
@@ -108,7 +108,7 @@ public class AccountTest {
     public void whenEqualsToNotSameUrlMapThenFalse() {
         final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
         account.getUrlMap().put(TestConstants.LONG_URL, new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE));
+                TestConstants.REDIRECT_TYPE_PERMANENT));
         assertFalse(this.account.equals(account));
     }
 

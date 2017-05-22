@@ -46,8 +46,8 @@ public class RegisterUrlRequestTest {
      */
     @Test
     public void whenSetRedirectTypeThenItChanges() {
-        this.request.setRedirectType(TestConstants.REDIRECT_TYPE);
-        assertThat(this.request.getRedirectType(), is(TestConstants.REDIRECT_TYPE));
+        this.request.setRedirectType(TestConstants.REDIRECT_TYPE_PERMANENT);
+        assertThat(this.request.getRedirectType(), is(TestConstants.REDIRECT_TYPE_PERMANENT));
     }
 
     /**
@@ -56,9 +56,9 @@ public class RegisterUrlRequestTest {
     @Test
     public void whenDeserializeFromJsonThenResult() throws IOException {
         final String json = String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         final RegisterUrlRequest request = new JsonTestHelper().decode(json, RegisterUrlRequest.class);
         assertThat(request.getLongUrl(), is(TestConstants.LONG_URL));
-        assertThat(request.getRedirectType(), is(TestConstants.REDIRECT_TYPE));
+        assertThat(request.getRedirectType(), is(TestConstants.REDIRECT_TYPE_PERMANENT));
     }
 }

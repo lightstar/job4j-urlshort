@@ -47,7 +47,7 @@ public class ErrorControllerImpl implements ErrorController {
      * @param request servlet's request.
      * @return response data.
      */
-    @RequestMapping(value = ERROR_PATH)
+    @RequestMapping(ERROR_PATH)
     public ErrorResponse error(final HttpServletRequest request) {
         final RequestAttributes requestAttributes = new ServletRequestAttributes(request);
         final Map<String, Object> errorAttributes = this.errorAttributes.getErrorAttributes(requestAttributes,

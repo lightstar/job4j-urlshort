@@ -52,9 +52,9 @@ public class UrlMemoryRepositoryTest extends Mockito {
     public void whenRegisterThenCallMemoryStorage() throws UrlShortException {
         final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
         this.urlMemoryRepository.register(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         verify(this.memoryStorage, times(1)).registerUrl(account, TestConstants.SHORT_URL,
-                TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+                TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT);
         verifyNoMoreInteractions(this.memoryStorage);
     }
 
@@ -63,7 +63,8 @@ public class UrlMemoryRepositoryTest extends Mockito {
      */
     @Test
     public void whenIncreaseHitCountThenCallMemoryStorage() throws UrlShortException {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         this.urlMemoryRepository.increaseHitCount(url);
         verify(this.memoryStorage, times(1)).increaseUrlHitCount(url);
         verifyNoMoreInteractions(this.memoryStorage);

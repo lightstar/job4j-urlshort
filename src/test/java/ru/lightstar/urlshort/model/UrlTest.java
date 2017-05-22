@@ -18,7 +18,8 @@ public class UrlTest {
     /**
      * <code>Url</code> object used in all tests.
      */
-    private final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+    private final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+            TestConstants.REDIRECT_TYPE_PERMANENT);
 
     /**
      * Test correctness of created url.
@@ -27,7 +28,7 @@ public class UrlTest {
     public void whenCreateUrlThenAllFieldsInitialized() {
         assertThat(this.url.getShortUrl(), is(TestConstants.SHORT_URL));
         assertThat(this.url.getLongUrl(), is(TestConstants.LONG_URL));
-        assertThat(this.url.getRedirectType(), is(TestConstants.REDIRECT_TYPE));
+        assertThat(this.url.getRedirectType(), is(TestConstants.REDIRECT_TYPE_PERMANENT));
         assertThat(this.url.getHitCount(), is(0));
     }
 
@@ -66,8 +67,8 @@ public class UrlTest {
      */
     @Test
     public void whenSetRedirectTypeThenItChanges() {
-        this.url.setRedirectType(TestConstants.REDIRECT_TYPE2);
-        assertThat(this.url.getRedirectType(), is(TestConstants.REDIRECT_TYPE2));
+        this.url.setRedirectType(TestConstants.REDIRECT_TYPE_TEMPORARY);
+        assertThat(this.url.getRedirectType(), is(TestConstants.REDIRECT_TYPE_TEMPORARY));
     }
 
     /**
@@ -94,7 +95,8 @@ public class UrlTest {
      */
     @Test
     public void whenEqualsToSameThenTrue() {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         assertTrue(this.url.equals(url));
     }
 
@@ -103,7 +105,8 @@ public class UrlTest {
      */
     @Test
     public void whenEqualsToNotSameShortUrlThenFalse() {
-        final Url url = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL2, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         assertFalse(this.url.equals(url));
     }
 
@@ -112,7 +115,8 @@ public class UrlTest {
      */
     @Test
     public void whenEqualsToNotSameLongUrlThenFalse() {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL2, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL2,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         assertFalse(this.url.equals(url));
     }
 
@@ -121,7 +125,8 @@ public class UrlTest {
      */
     @Test
     public void whenEqualsToNotSameRedirectTypeThenFalse() {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE2);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_TEMPORARY);
         assertFalse(this.url.equals(url));
     }
 
@@ -130,7 +135,8 @@ public class UrlTest {
      */
     @Test
     public void whenEqualsToNotSameHitCountThenFalse() {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         url.setHitCount(TestConstants.HIT_COUNT);
         assertFalse(this.url.equals(url));
     }
@@ -156,7 +162,8 @@ public class UrlTest {
      */
     @Test
     public void whenCompareHashCodesOfTheSameUrlsThenTrue() {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         assertTrue(this.url.hashCode() == url.hashCode());
     }
 }

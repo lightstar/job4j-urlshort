@@ -42,7 +42,8 @@ public class RedirectServiceTest extends Mockito {
      */
     @Test
     public void whenGetUrlThenItRetrievesFromRepositoryAndHitCountIncreases() throws UrlShortException {
-        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE);
+        final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL,
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         when(this.urlRepository.getByShort(TestConstants.SHORT_URL)).thenReturn(url);
 
         final Url resultUrl = this.redirectService.getUrl(TestConstants.SHORT_URL);

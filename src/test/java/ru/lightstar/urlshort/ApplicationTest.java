@@ -16,11 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ApplicationTest {
 
     /**
-     * String that must be in output when spring boot sets up successfully.
-     */
-    private static final String SPRING_BOOT_STARTUP = "root of context hierarchy";
-
-    /**
      * Test successful spring boot application start.
      */
     @Test
@@ -30,6 +25,6 @@ public class ApplicationTest {
 
         Application.main(new String[]{});
 
-        assertThat(outputStream.toString()).contains(SPRING_BOOT_STARTUP);
+        assertThat(outputStream.toString()).contains(TestConstants.SPRING_BOOT_STARTUP);
     }
 }

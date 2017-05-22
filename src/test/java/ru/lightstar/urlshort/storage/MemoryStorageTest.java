@@ -71,11 +71,11 @@ public class MemoryStorageTest {
     public void whenRegisterUrlThenItRegisters() throws UrlShortException {
         final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
         final Url url = this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
 
         assertThat(url.getShortUrl(), is(TestConstants.SHORT_URL));
         assertThat(url.getLongUrl(), is(TestConstants.LONG_URL));
-        assertThat(url.getRedirectType(), is(TestConstants.REDIRECT_TYPE));
+        assertThat(url.getRedirectType(), is(TestConstants.REDIRECT_TYPE_PERMANENT));
         assertThat(url.getHitCount(), is(0));
         assertThat(account.getUrlMap().keySet(), hasSize(1));
         assertThat(account.getUrlMap().get(TestConstants.LONG_URL), is(url));
@@ -99,9 +99,9 @@ public class MemoryStorageTest {
         final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
 
         this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL2,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
     }
 
     /**
@@ -114,9 +114,9 @@ public class MemoryStorageTest {
         final Account account2 = this.memoryStorage.createAccount(TestConstants.ID2, TestConstants.PASSWORD2);
 
         this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         this.memoryStorage.registerUrl(account2, TestConstants.SHORT_URL, TestConstants.LONG_URL2,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
     }
 
     /**
@@ -128,9 +128,9 @@ public class MemoryStorageTest {
         final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
 
         this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL2, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
     }
 
     /**
@@ -143,9 +143,9 @@ public class MemoryStorageTest {
         final Account account2 = this.memoryStorage.createAccount(TestConstants.ID2, TestConstants.PASSWORD2);
 
         this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         final Url url = this.memoryStorage.registerUrl(account2, TestConstants.SHORT_URL2, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
 
         assertThat(this.memoryStorage.getUrlByShortUrl(TestConstants.SHORT_URL2), IsSame.sameInstance(url));
     }
@@ -157,7 +157,7 @@ public class MemoryStorageTest {
     public void whenIncreaseHitCountThenItIncreases() throws UrlShortException {
         final Account account = this.memoryStorage.createAccount(TestConstants.ID, TestConstants.PASSWORD);
         final Url url = this.memoryStorage.registerUrl(account, TestConstants.SHORT_URL, TestConstants.LONG_URL,
-                TestConstants.REDIRECT_TYPE);
+                TestConstants.REDIRECT_TYPE_PERMANENT);
         this.memoryStorage.increaseUrlHitCount(url);
 
         assertThat(url.getHitCount(), is(1));
