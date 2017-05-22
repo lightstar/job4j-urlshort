@@ -99,9 +99,14 @@ public class TestConstants {
     public static final String HASH_ALG = "testHashAlg";
 
     /**
-     * Test user's role.
+     * User's role.
      */
-    public static final String ROLE = "ROLE_USER";
+    public static final String ROLE_USER = "ROLE_USER";
+
+    /**
+     * Admin's role.
+     */
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     /**
      * Standard http schema port used for tests.

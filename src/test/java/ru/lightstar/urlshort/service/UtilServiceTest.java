@@ -155,10 +155,10 @@ public class UtilServiceTest {
     public void whenGetAuthRoleThenResult() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 TestConstants.ID, TestConstants.PASSWORD,
-                Collections.singleton(new SimpleGrantedAuthority(TestConstants.ROLE))));
+                Collections.singleton(new SimpleGrantedAuthority(TestConstants.ROLE_USER))));
         final String authRole = this.utilService.getAuthRole();
 
-        assertThat(authRole, is(TestConstants.ROLE));
+        assertThat(authRole, is(TestConstants.ROLE_USER));
     }
 
     /**

@@ -1,27 +1,15 @@
 package ru.lightstar.urlshort.controller;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.lightstar.urlshort.TestConstants;
 import ru.lightstar.urlshort.exception.AccountNotFoundException;
 import ru.lightstar.urlshort.exception.LongUrlAlreadyExistsException;
 import ru.lightstar.urlshort.model.Account;
 import ru.lightstar.urlshort.model.Url;
-import ru.lightstar.urlshort.security.AuthenticationProviderImpl;
-import ru.lightstar.urlshort.security.SecurityConfiguration;
-import ru.lightstar.urlshort.service.ConfigService;
-import ru.lightstar.urlshort.service.UtilService;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,28 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author LightStar
  * @since 0.0.1
  */
-@RunWith(SpringRunner.class)
-@WebMvcTest(RegisterUrlController.class)
-@Import({SecurityConfiguration.class,AuthenticationProviderImpl.class})
-public class RegisterUrlControllerTest extends Mockito {
-
-    /**
-     * Auto-created mocked Spring MVC infrastructure.
-     */
-    @Autowired
-    private MockMvc mvc;
-
-    /**
-     * Mocked configuration service bean.
-     */
-    @MockBean
-    private ConfigService configService;
-
-    /**
-     * Mocked utility service bean.
-     */
-    @MockBean
-    private UtilService utilService;
+public class RegisterUrlControllerTest extends ControllerTest {
 
     /**
      * Test correctness of register url request.
@@ -119,16 +86,11 @@ public class RegisterUrlControllerTest extends Mockito {
     @Test
     public void whenRegisterUrlAndLongUrlAlreadyExistsThenError() throws Exception {
         final Account account = this.setUpMockAuthorization();
-        when(this.utilService.getAuthName()).thenReturn(TestConstants.ID);
         when(this.configService.registerUrl(account, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT))
                 .thenThrow(new LongUrlAlreadyExistsException("Long url already exists"));
 
-        this.mvc.perform(post("/register")
-                    .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                            TestConstants.REDIRECT_TYPE_PERMANENT)))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD,
+                             TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT)
                 .andExpect(status().isConflict())
                 .andExpect(content().json(
                         "{\"error\":\"This url already registered in your account\"}"));
@@ -140,17 +102,12 @@ public class RegisterUrlControllerTest extends Mockito {
     @Test
     public void whenRegisterUrlAndAccountNotFoundOnSecondCallThenError() throws Exception {
         final Account account = this.setUpMockAuthorization();
-        when(this.utilService.getAuthName()).thenReturn(TestConstants.ID);
         when(this.configService.getAccountById(TestConstants.ID))
                 .thenReturn(account)
                 .thenThrow(new AccountNotFoundException("Account not found"));
 
-        this.mvc.perform(post("/register")
-                .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                        TestConstants.REDIRECT_TYPE_PERMANENT)))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD,
+                             TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT)
                 .andExpect(status().isNotFound())
                 .andExpect(content().json(
                         "{\"error\":\"Account not found\"}"));
@@ -161,11 +118,7 @@ public class RegisterUrlControllerTest extends Mockito {
      */
     @Test
     public void whenRegisterUrlWithNoAuthThenAuthError() throws Exception {
-        this.mvc.perform(post("/register")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                                TestConstants.REDIRECT_TYPE_PERMANENT)))
+        this.postRegisterUrl(null, null, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT)
                 .andExpect(status().isUnauthorized());
     }
 
@@ -178,28 +131,19 @@ public class RegisterUrlControllerTest extends Mockito {
         when(this.configService.getAccountById(TestConstants.ID))
                 .thenThrow(new AccountNotFoundException("Account not found"));
 
-        this.mvc.perform(post("/register")
-                .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                        TestConstants.REDIRECT_TYPE_PERMANENT)))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD,
+                             TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT)
                 .andExpect(status().isUnauthorized());
     }
 
     /**
-     * Test correctness of register url request when authenticated account not found.
+     * Test correctness of register url request when wrong password is supplied.
      */
     @Test
     public void whenRegisterUrlWithWrongPasswordThenAuthError() throws Exception {
         this.setUpMockAuthorization();
-
-        this.mvc.perform(post("/register")
-                .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD2))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                        TestConstants.REDIRECT_TYPE_PERMANENT)))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD2,
+                             TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT)
                 .andExpect(status().isUnauthorized());
     }
 
@@ -209,12 +153,7 @@ public class RegisterUrlControllerTest extends Mockito {
     @Test
     public void whenRegisterUrlWithEmptyUrlThenError() throws Exception {
         this.setUpMockAuthorization();
-
-        this.mvc.perform(post("/register")
-                    .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"url\":\"\"}"))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD, "", 0)
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"error\":\"Invalid parameters\"}"));
     }
@@ -225,13 +164,8 @@ public class RegisterUrlControllerTest extends Mockito {
     @Test
     public void whenRegisterUrlWithWrongRedirectTypeThenError() throws Exception {
         this.setUpMockAuthorization();
-
-        this.mvc.perform(post("/register")
-                    .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                        TestConstants.REDIRECT_TYPE_WRONG)))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD,
+                             TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_WRONG)
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"error\":\"Invalid parameters\"}"));
     }
@@ -242,13 +176,24 @@ public class RegisterUrlControllerTest extends Mockito {
     @Test
     public void whenRegisterUrlWithEmptyBodyThenError() throws Exception {
         this.setUpMockAuthorization();
-
-        this.mvc.perform(post("/register")
-                    .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD, null, 0)
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"error\":\"Invalid parameters\"}"));
+    }
+
+    /**
+     * Test correctness of register url request when runtime exception is thrown.
+     */
+    @Test
+    public void whenRegisterUrlAndRuntimeExceptionThenError() throws Exception {
+        final Account account = this.setUpMockAuthorization();
+        when(this.configService.registerUrl(account, TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT))
+                .thenThrow(new RuntimeException());
+
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD,
+                TestConstants.LONG_URL, TestConstants.REDIRECT_TYPE_PERMANENT)
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().json("{\"error\":\"Unknown error\"}"));
     }
 
     /**
@@ -264,24 +209,12 @@ public class RegisterUrlControllerTest extends Mockito {
     private void testRegisterUrl(final String schema, final int port, final int sentRedirectType,
                                  final int redirectType, final String urlBase) throws Exception {
         final Account account = this.setUpMockAuthorization();
-        when(this.utilService.getAuthName()).thenReturn(TestConstants.ID);
         final Url url = new Url(TestConstants.SHORT_URL, TestConstants.LONG_URL, redirectType);
         when(this.configService.registerUrl(account, TestConstants.LONG_URL, redirectType))
                 .thenReturn(url);
 
-        this.mvc.perform(post("/register")
-                .with(httpBasic(TestConstants.ID, TestConstants.OPEN_PASSWORD))
-                .with(request -> {
-                    request.setLocalPort(port);
-                    request.setScheme(schema);
-                    return request;
-                })
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(sentRedirectType != 0 ?
-                        String.format("{\"url\":\"%s\",\"redirectType\":%d}", TestConstants.LONG_URL,
-                                sentRedirectType) :
-                        String.format("{\"url\":\"%s\"}", TestConstants.LONG_URL)))
+        this.postRegisterUrl(TestConstants.ID, TestConstants.OPEN_PASSWORD, schema, port,
+                             TestConstants.LONG_URL, sentRedirectType)
                 .andExpect(status().isCreated())
                 .andExpect(content().json(String.format(
                         "{\"shortUrl\":\"%s%s\"}",
@@ -298,15 +231,56 @@ public class RegisterUrlControllerTest extends Mockito {
     }
 
     /**
-     * Configure mock services to return correct results for mock authorization to work.
+     * Make a mock post request to register url.
      *
-     * @return authorized account.
-     * @throws AccountNotFoundException shouldn't be thrown.
+     * @param login authorization header's login.
+     * @param password authorization header's password.
+     * @param url registered url.
+     * @param redirectType registered url's redirect type.
+     * @return mock request result.
+     * @throws Exception shouldn't be thrown.
      */
-    private Account setUpMockAuthorization() throws AccountNotFoundException {
-        final Account account = new Account(TestConstants.ID, TestConstants.PASSWORD);
-        when(this.utilService.getHashedPassword(TestConstants.OPEN_PASSWORD)).thenReturn(TestConstants.PASSWORD);
-        when(this.configService.getAccountById(TestConstants.ID)).thenReturn(account);
-        return account;
+    private ResultActions postRegisterUrl(final String login, final String password, final String url,
+                                          final int redirectType) throws Exception {
+        return this.postRegisterUrl(login, password, null, 0, url, redirectType);
+    }
+
+    /**
+     * Make a mock post request to register url.
+     *
+     * @param login authorization header's login.
+     * @param password authorization header's password.
+     * @param schema request's schema.
+     * @param port request's port.
+     * @param url registered url.
+     * @param redirectType registered url's redirect type.
+     * @return mock request result.
+     * @throws Exception shouldn't be thrown.
+     */
+    private ResultActions postRegisterUrl(final String login, final String password, final String schema, final int port,
+                                          final String url, final int redirectType) throws Exception {
+        MockHttpServletRequestBuilder builder = this.postJson("/register");
+
+        if (login != null && password != null) {
+            builder = builder.with(httpBasic(login, password));
+        }
+
+        if (schema != null && port != 0) {
+            builder = builder.with(request -> {
+                request.setScheme(schema);
+                request.setLocalPort(port);
+                return request;
+            });
+        }
+
+        if (url != null) {
+            if (redirectType == 0) {
+                builder = builder.content(String.format("{\"url\":\"%s\"}", url));
+            } else {
+                builder = builder.content(String.format("{\"url\":\"%s\",\"redirectType\":%d}", url, redirectType));
+            }
+        }
+
+        return this.mvc.perform(builder);
     }
 }

@@ -1,25 +1,12 @@
 package ru.lightstar.urlshort.controller;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import ru.lightstar.urlshort.TestConstants;
 import ru.lightstar.urlshort.exception.AccountAlreadyExistsException;
 import ru.lightstar.urlshort.model.Account;
 import ru.lightstar.urlshort.model.AccountWithOpenPassword;
-import ru.lightstar.urlshort.security.AuthenticationProviderImpl;
-import ru.lightstar.urlshort.security.SecurityConfiguration;
-import ru.lightstar.urlshort.service.ConfigService;
-import ru.lightstar.urlshort.service.UtilService;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,28 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author LightStar
  * @since 0.0.1
  */
-@RunWith(SpringRunner.class)
-@WebMvcTest(CreateAccountController.class)
-@Import({SecurityConfiguration.class,AuthenticationProviderImpl.class})
-public class CreateAccountControllerTest extends Mockito {
-
-    /**
-     * Auto-created mocked Spring MVC infrastructure.
-     */
-    @Autowired
-    private MockMvc mvc;
-
-    /**
-     * Mocked configuration service bean.
-     */
-    @MockBean
-    private ConfigService configService;
-
-    /**
-     * Mocked utility service bean.
-     */
-    @MockBean
-    private UtilService utilService;
+public class CreateAccountControllerTest extends ControllerTest {
 
     /**
      * Test correctness of create account request.
@@ -62,10 +28,7 @@ public class CreateAccountControllerTest extends Mockito {
                 TestConstants.OPEN_PASSWORD);
         when(this.configService.createAccount(TestConstants.ID)).thenReturn(accountWithOpenPassword);
 
-        this.mvc.perform(post("/account")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(String.format("{\"AccountId\":\"%s\"}", TestConstants.ID)))
+        this.postCreateAccount(TestConstants.ID)
                 .andExpect(status().isCreated())
                 .andExpect(content().json(String.format(
                         "{\"success\":true, \"description\":\"Your account is opened\",\"password\":\"%s\"}",
@@ -83,10 +46,7 @@ public class CreateAccountControllerTest extends Mockito {
         when(this.configService.createAccount(TestConstants.ID)).thenThrow(
                 new AccountAlreadyExistsException("Account already exists"));
 
-        this.mvc.perform(post("/account")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(String.format("{\"AccountId\":\"%s\"}", TestConstants.ID)))
+        this.postCreateAccount(TestConstants.ID)
                 .andExpect(status().isConflict())
                 .andExpect(content().json(
                         "{\"success\":false, \"description\":\"Account with that ID already exists\"}"));
@@ -100,10 +60,7 @@ public class CreateAccountControllerTest extends Mockito {
      */
     @Test
     public void whenCreateAccountAndAccountIdEmptyThenError() throws Exception {
-        this.mvc.perform(post("/account")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"AccountId\":\"\"}"))
+        this.postCreateAccount("")
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"error\":\"Invalid parameters\"}"));
     }
@@ -113,10 +70,31 @@ public class CreateAccountControllerTest extends Mockito {
      */
     @Test
     public void whenCreateAccountAndRequestBodyEmptyThenError() throws Exception {
-        this.mvc.perform(post("/account")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON))
+        this.mvc.perform(this.postJson("/account"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"error\":\"Invalid parameters\"}"));
+    }
+
+    /**
+     * Test correctness of create account request when runtime exception is thrown.
+     */
+    @Test
+    public void whenCreateAccountAndRuntimeExceptionThenError() throws Exception {
+        when(this.configService.createAccount(TestConstants.ID)).thenThrow(new RuntimeException());
+
+        this.postCreateAccount(TestConstants.ID)
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().json("{\"error\":\"Unknown error\"}"));
+    }
+
+    /**
+     * Make a mock post request to create account.
+     *
+     * @param accountId account's id to create.
+     * @return mock request result.
+     */
+    private ResultActions postCreateAccount(final String accountId) throws Exception {
+        return this.mvc.perform(this.postJson("/account")
+                .content(String.format("{\"AccountId\":\"%s\"}", accountId)));
     }
 }
