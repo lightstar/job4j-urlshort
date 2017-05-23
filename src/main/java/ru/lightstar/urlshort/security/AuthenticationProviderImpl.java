@@ -1,6 +1,7 @@
 package ru.lightstar.urlshort.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,18 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
     private final UtilService utilService;
 
     /**
+     * Administrator's login.
+     */
+    @Value("${admin.login}")
+    private String adminLogin;
+
+    /**
+     * Administrator's password.
+     */
+    @Value("${admin.password}")
+    private String adminPassword;
+
+    /**
      * Constructs <code>AuthenticationProviderImpl</code> object.
      *
      * @param configService injected configuration service bean.
@@ -53,19 +66,23 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
     @Override
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
         final String login = authentication.getName();
-        final String password = this.utilService.getHashedPassword(authentication.getCredentials().toString());
+        final String openPassword = authentication.getCredentials().toString();
+
+        if (login.equals(this.adminLogin)) {
+            if (openPassword.equals(this.adminPassword)) {
+                return this.getAuthToken(login, openPassword, "ROLE_ADMIN");
+            } else {
+                return null;
+            }
+        }
 
         try {
+            final String password = this.utilService.getHashedPassword(openPassword);
             final Account account = this.configService.getAccountById(login);
-
             if (!account.getPassword().equals(password)) {
                 return null;
             }
-
-            final GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
-            final List<GrantedAuthority> grantedAuthorities = Collections.singletonList(grantedAuthority);
-
-            return new UsernamePasswordAuthenticationToken(login, password, grantedAuthorities);
+            return this.getAuthToken(login, password, "ROLE_USER");
         } catch (AccountNotFoundException e) {
             return null;
         }
@@ -77,5 +94,19 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
     @Override
     public boolean supports(final Class<?> authenticationClass) {
         return authenticationClass.equals(UsernamePasswordAuthenticationToken.class);
+    }
+
+    /**
+     * Generate authentication token for given login, password and role.
+     *
+     * @param login user's login.
+     * @param password user's password.
+     * @param role user's role.
+     * @return authentication token.
+     */
+    private Authentication getAuthToken(final String login, final String password, final String role) {
+        final GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role);
+        final List<GrantedAuthority> grantedAuthorities = Collections.singletonList(grantedAuthority);
+        return new UsernamePasswordAuthenticationToken(login, password, grantedAuthorities);
     }
 }

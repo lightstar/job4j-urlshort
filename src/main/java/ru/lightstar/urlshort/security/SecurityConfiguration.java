@@ -49,7 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/register").hasRole("USER")
-                .antMatchers(HttpMethod.GET,"/statistic/*").hasRole("USER")
+                .antMatchers(HttpMethod.GET,"/statistic/*").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/").permitAll()
                 .and()
                 .csrf()

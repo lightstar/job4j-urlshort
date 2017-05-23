@@ -60,14 +60,25 @@ public class StatisticControllerTest extends ControllerTest {
     @Test
     public void whenGetStatisticWithDifferentIdAndUserIsAdminThenResult() throws Exception {
         this.setUpMockAuthorization();
+        when(this.utilService.getAuthName()).thenReturn(this.adminLogin);
         when(this.utilService.getAuthRole()).thenReturn(TestConstants.ROLE_ADMIN);
 
         final Account account = new Account(TestConstants.ID2, TestConstants.PASSWORD2);
         when(this.configService.getStatistic(account)).thenReturn(Collections.emptyMap());
 
-        this.getStatistic(TestConstants.ID, TestConstants.OPEN_PASSWORD, TestConstants.ID2)
+        this.getStatistic(this.adminLogin, this.adminPassword, TestConstants.ID2)
                 .andExpect(status().isOk())
                 .andExpect(content().json("{}"));
+    }
+
+    /**
+     * Test correctness of statistic request when try request it by admin with wrong password.
+     */
+    @Test
+    public void whenGetStatisticByAdminWithWrongPasswordThenError() throws Exception {
+        this.setUpMockAuthorization();
+        this.getStatistic(this.adminLogin, TestConstants.PASSWORD, TestConstants.ID2)
+                .andExpect(status().isUnauthorized());
     }
 
     /**

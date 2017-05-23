@@ -92,7 +92,7 @@ public class GlobalExceptionHandler {
      *
      * @return response data object.
      */
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse defaultExceptionHandler() {
         return this.exceptionHandler("Unknown error");

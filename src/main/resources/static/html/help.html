@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Url shortener help</title>
+    <link rel="stylesheet" type="text/css" href="css/short.css">
+</head>
+<body>
+<div class="content">
+    <h2>URL shortener help</h2>
+
+    <p>
+        This is prototype of URL shortener web service. To run it just enter command <i>gradlew bootRun</i> in
+        project root or <i>gradlew build</i> and then <i>java -jar build/libs/urlshort-0.0.1.jar</i>.
+    </p>
+
+    <p>
+        Application will bind to address <i>127.0.0.1:8080</i> and have prefix <i>/short/</i> by default but you
+        can change this in <i>src/main/resources/application.properties</i> file. This file also includes admin's
+        login and password (they are 'admin' and 'admin' by default) which can be used to access any account's
+        statistic. Later in this document default settings will be assumed.
+    </p>
+
+    <p>
+        First you must register an account by performing a POST request to URL
+        <i>http://127.0.0.1:8080/short/account</i> with chosen account's id in JSON body
+        <i>{"AccountId":"{AccountId"}</i>. On success you will receive password for that account in response body:
+        <i>{"success":true,"description":"Your account is opened","password":"{password}"}</i>.
+    </p>
+
+    <p>
+        Send a POST request to URL <i>http://127.0.0.1:8080/short/register</i> with authorization header which includes
+        your account's id and password. JSON body of this request must include url and redirect type:
+        <i>{"url":"{url}","redirectType":{redirectType}}</i>. URL can be anything and redirect type must be 301 or 302.
+        You can omit redirect type altogether, it will be 302 by default then. In response JSON body there will be
+        short url <i>{"shortUrl":"{shortUrl"}</i>. You can use that to redirect to registered url.
+    </p>
+
+    <p>
+        To view account's statistic go to <i>http://127.0.0.1:8080/short/statistic/{accountId}</i>. You must authorize
+        either using accessed account's credentials or by using admin's login and password. Response JSON body will
+        contain long URLs and counts of redirects to them like this: <i>{"{url1}":{count1},"{url2}":{count2},...}</i>.
+    </p>
+
+    <p>
+        All data in this prototype is stored in memory so it will be lost on application restart.
+    </p>
+</div>
+</body>
+</html>

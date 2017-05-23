@@ -3,6 +3,7 @@ package ru.lightstar.urlshort.controller;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -54,6 +55,18 @@ public abstract class ControllerTest extends Mockito {
      */
     @MockBean
     protected UtilService utilService;
+
+    /**
+     * Administrator's login.
+     */
+    @Value("${admin.login}")
+    protected String adminLogin;
+
+    /**
+     * Administrator's password.
+     */
+    @Value("${admin.login}")
+    protected String adminPassword;
 
     /**
      * Make a mock post request with request and response types set as JSON.

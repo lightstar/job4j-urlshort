@@ -42,7 +42,7 @@ public class RedirectController {
      * @return redirection model and view object.
      * @throws UrlNotFoundException thrown if given short url does not registered in application.
      */
-    @RequestMapping("/{shortUrl}")
+    @RequestMapping("/{shortUrl:[a-zA-Z0-9]+}")
     public ModelAndView redirect(@PathVariable final String shortUrl) throws UrlNotFoundException {
         final Url url = this.redirectService.getUrl(shortUrl);
 
