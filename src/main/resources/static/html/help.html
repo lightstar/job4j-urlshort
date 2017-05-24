@@ -25,13 +25,13 @@
 
     <p>
         First you must register an account by performing a POST request to URL
-        <i>http://127.0.0.1:8080/short/account</i> with chosen account's id in JSON body
+        <i>http://localhost:8080/short/account</i> with chosen account's id in JSON body
         <i>{"AccountId":"{AccountId"}</i>. On success you will receive password for that account in response body:
         <i>{"success":true,"description":"Your account is opened","password":"{password}"}</i>.
     </p>
 
     <p>
-        Send a POST request to URL <i>http://127.0.0.1:8080/short/register</i> with authorization header which includes
+        Send a POST request to URL <i>http://localhost:8080/short/register</i> with authorization header which includes
         your account's id and password. JSON body of this request must include url and redirect type:
         <i>{"url":"{url}","redirectType":{redirectType}}</i>. URL can be anything and redirect type must be 301 or 302.
         You can omit redirect type altogether, it will be 302 by default then. In response JSON body there will be
@@ -39,7 +39,7 @@
     </p>
 
     <p>
-        To view account's statistic go to <i>http://127.0.0.1:8080/short/statistic/{accountId}</i>. You must authorize
+        To view account's statistic go to <i>http://localhost:8080/short/statistic/{accountId}</i>. You must authorize
         either using accessed account's credentials or by using admin's login and password. Response JSON body will
         contain long URLs and counts of redirects to them like this: <i>{"{url1}":{count1},"{url2}":{count2},...}</i>.
     </p>
