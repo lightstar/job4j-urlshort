@@ -1,0 +1,18 @@
+<h2>Register URL for account "{{account.id}}"</h2>
+<div class="message">{{message}}</div>
+
+<div class="top-actions">
+    <a href="#!showUrls/{{account.id}}">Back</a>
+</div>
+
+<form>
+    <label for="url">URL:</label>
+    <input type="text" id="url" ng-model="url.url" required>
+    <label for="redirectType">Redirect:</label>
+    <select id="redirectType" ng-model="url.redirectType">
+        <option value="">--</option>
+        <option value="301">301</option>
+        <option value="302">302</option>
+    </select>
+    <input type="button" ng-click="registerUrl()" value="Register">
+</form>

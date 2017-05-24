@@ -1,0 +1,12 @@
+<h2>Create account</h2>
+<div class="message">{{message}}</div>
+
+<div class="top-actions">
+    <a href="#!showAccounts">Back</a>
+</div>
+
+<form>
+    <label for="accountId">Name:</label>
+    <input type="text" id="accountId" ng-model="account.AccountId" required>
+    <input type="button" ng-click="createAccount()" value="Create">
+</form>

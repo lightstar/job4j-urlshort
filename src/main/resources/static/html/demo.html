@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Url shortener demo</title>
+    <link rel="stylesheet" type="text/css" href="css/short.css">
+</head>
+<body>
+    <div class="content" ng-app="mainApp">
+        <h1>Url shortener demo</h1>
+        <hr>
+        <div ng-view></div>
+    </div>
+
+    <script src="js/angular/angular.min.js"></script>
+    <script src="js/angular/angular-route.min.js"></script>
+    <script src="js/angular/angular-utf8-base64.min.js"></script>
+
+    <script src="js/demo/main.js"></script>
+    <script src="js/demo/service/AccountService.js"></script>
+    <script src="js/demo/service/MessageService.js"></script>
+    <script src="js/demo/controller/ShowAccounts.js"></script>
+    <script src="js/demo/controller/CreateAccount.js"></script>
+    <script src="js/demo/controller/ShowUrls.js"></script>
+    <script src="js/demo/controller/RegisterUrl.js"></script>
+    <script src="js/demo/controller/ShowStatistic.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<h2>Urls of account "{{account.id}}"</h2>
+<div class="message">{{message}}</div>
+
+<div class="top-actions">
+    <a href="#!showAccounts">Back</a>
+    <a href="#!registerUrl/{{account.id}}">Register URL</a>
+</div>
+
+<table>
+    <tr>
+        <th>long</th>
+        <th>short</th>
+        <th>redirectType</th>
+    </tr>
+    <tr ng-repeat="url in account.urls">
+        <td><a href="{{url.long}}" target="_blank">{{url.long}}</a></td>
+        <td><a href="{{url.short}}" target="_blank">{{url.short}}</a></td>
+        <td>{{url.redirectType}}</td>
+    </tr>
+</table>

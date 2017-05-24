@@ -139,3 +139,32 @@ http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
 
 Тесты запускает команда `gradlew test`. После этого в директории `build/reports/jacoco/test/html`
 будет находиться отчет от плагина Jacoco о покрытии кода тестами.
+
+После запуска приложения страница помощи будет доступна как по адресу `http://localhost:8080/short/`,
+так и по адресу `http://localhost:8080/short/help`. Также реализована демо-страница, доступная по адресу
+`http://localhost:8080/short/demo`. Только имейте ввиду, что в текущей реализации невозможно загрузить с сервера
+информацию обо всех созданных аккаунтах, так что данная страница обнулится после перезагрузки.
+
+**Страница помощи:**
+
+![Screenshot](img/screenshot1.png)
+
+**Список аккаунтов:**
+
+![Screenshot](img/screenshot2.png)
+
+**Создание аккаунта:**
+
+![Screenshot](img/screenshot3.png)
+
+**Список URL-адресов:**
+
+![Screenshot](img/screenshot4.png)
+
+**Регистрация URL-адреса:**
+
+![Screenshot](img/screenshot5.png)
+
+**Статистика:**
+
+![Screenshot](img/screenshot6.png)

@@ -4,16 +4,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Controller used to show help page.
+ * Controller used to show demo page.
  *
  * @author LightStar
  * @since 0.0.1
  */
 @Controller
-public class HelpController {
+public class DemoController {
 
-    @RequestMapping({"/", "/help"})
+    @RequestMapping("/demo")
     public String help() {
-        return "help";
+        return "demo";
     }
 }

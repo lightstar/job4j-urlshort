@@ -1,0 +1,17 @@
+<h2>Statistic of account "{{account.id}}"</h2>
+<div class="message">{{message}}</div>
+
+<div class="top-actions">
+    <a href="#!showAccounts">Back</a>
+</div>
+
+<table>
+    <tr>
+        <th>url</th>
+        <th>count</th>
+    </tr>
+    <tr ng-repeat="(url,count) in statistic">
+        <td><a href="{{url}}" target="_blank">{{url}}</a></td>
+        <td>{{count}}</td>
+    </tr>
+</table>

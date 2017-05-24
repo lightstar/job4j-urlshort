@@ -1,0 +1,22 @@
+<h2>Accounts</h2>
+<div class="message">{{message}}</div>
+
+<div class="top-actions">
+    <a href="#!createAccount">Create Account</a>
+</div>
+
+<table>
+    <tr>
+        <th>id</th>
+        <th>password</th>
+        <th>&nbsp;</th>
+    </tr>
+    <tr ng-repeat="account in accounts">
+        <td>{{account.id}}</td>
+        <td>{{account.password}}</td>
+        <td>
+            <a href="#!showUrls/{{account.id}}">URLs</a>
+            <a href="#!showStatistic/{{account.id}}">Statistic</a>
+        </td>
+    </tr>
+</table>
