@@ -12,7 +12,6 @@ mainApp.controller('ShowStatistic', function($scope, $http, $location, $routePar
             Authorization: "Basic " + base64.encode($scope.account.id + ":" + $scope.account.password)
         }})
         .then(function (response) {
-            console.log(response.data);
             $scope.statistic = response.data;
         }, function (response) {
             MessageService.set(response.data.error);
