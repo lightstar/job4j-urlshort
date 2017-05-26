@@ -1,5 +1,7 @@
 package ru.lightstar.urlshort.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Url model class.
  *
@@ -36,7 +38,7 @@ public class Url {
     /**
      * Count of hits for this <code>Url</code> object using short url string.
      */
-    private int hitCount = 0;
+    private AtomicInteger hitCount = new AtomicInteger(0);
 
     /**
      * Constructs empty <code>Url</code> object.
@@ -117,7 +119,7 @@ public class Url {
      * @return url's hit count.
      */
     public int getHitCount() {
-        return this.hitCount;
+        return this.hitCount.get();
     }
 
     /**
@@ -126,14 +128,14 @@ public class Url {
      * @param hitCount url's hit count.
      */
     public void setHitCount(final int hitCount) {
-        this.hitCount = hitCount;
+        this.hitCount.set(hitCount);
     }
 
     /**
      * Increment url's hit count by one.
      */
     public void increaseHitCount() {
-        this.hitCount++;
+        this.hitCount.incrementAndGet();
     }
 
     /**
@@ -151,7 +153,7 @@ public class Url {
 
         final Url url = (Url) obj;
         return this.shortUrl.equals(url.shortUrl) && this.longUrl.equals(url.longUrl) &&
-                this.redirectType == url.redirectType && this.hitCount == url.hitCount;
+                this.redirectType == url.redirectType && this.hitCount.get() == url.hitCount.get();
     }
 
     /**
@@ -162,7 +164,7 @@ public class Url {
         int result = this.shortUrl.hashCode();
         result = 31 * result + this.longUrl.hashCode();
         result = 31 * result + this.redirectType;
-        result = 31 * result + this.hitCount;
+        result = 31 * result + this.hitCount.get();
         return result;
     }
 }

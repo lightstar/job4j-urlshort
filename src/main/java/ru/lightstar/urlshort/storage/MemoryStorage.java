@@ -65,14 +65,13 @@ public class MemoryStorage {
      * @return created <code>Account</code> object.
      * @throws AccountAlreadyExistsException thrown if <code>Account</code> object with this id already exists.
      */
-    public synchronized Account createAccount(final String id, final String password)
+    public Account createAccount(final String id, final String password)
             throws AccountAlreadyExistsException {
-        if (this.accountMap.containsKey(id)) {
+        final Account account = new Account(id, password);
+        if (this.accountMap.putIfAbsent(id, account) != null) {
             throw new AccountAlreadyExistsException(String.format("Account with id '%s' already exists", id));
         }
 
-        final Account account = new Account(id, password);
-        this.accountMap.put(id, account);
         return account;
     }
 
@@ -113,7 +112,7 @@ public class MemoryStorage {
      *
      * @param url <code>Url</code> object.
      */
-    public synchronized void increaseUrlHitCount(final Url url) {
+    public void increaseUrlHitCount(final Url url) {
         url.increaseHitCount();
     }
 }
